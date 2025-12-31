@@ -22,6 +22,7 @@ builder.Services.AddScoped<JwtTokenGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<TenantContext>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>() ?? throw new Exception("JWT settings are not configured properly");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
