@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MultiTenant.ProjectManagement.API.Data;
 using MultiTenant.ProjectManagement.API.DTOs;
+using MultiTenant.ProjectManagement.API.Helpers;
 using MultiTenant.ProjectManagement.API.Models;
 
 namespace MultiTenant.ProjectManagement.API.Services
@@ -8,9 +9,11 @@ namespace MultiTenant.ProjectManagement.API.Services
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
-        public AuthService(AppDbContext context)
+        private readonly JwtTokenGenerator _jwtTokenGenerator;
+        public AuthService(AppDbContext context, JwtTokenGenerator jwtTokenGenerator )
         {
             _context = context;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         public async Task<AuthResponse> RegisterTenantAsync(RegisterTenantRequest request)
@@ -46,12 +49,14 @@ namespace MultiTenant.ProjectManagement.API.Services
             await _context.SaveChangesAsync();
 
             // Return response
+            var (token, expiresAt) = _jwtTokenGenerator.GenerateToken(user);
+
             return new AuthResponse
             {
                 TenantId = tenant.Id,
                 Role = user.Role,
-                Token = "TEMP_TOKEN",
-                ExpiresAt = DateTime.UtcNow.AddHours(1)
+                Token = token,
+                ExpiresAt = expiresAt
             };
         }
 
@@ -74,12 +79,14 @@ namespace MultiTenant.ProjectManagement.API.Services
             }
 
             // Return response (JWT comes later)
+            var (token, expiresAt) = _jwtTokenGenerator.GenerateToken(user);
+
             return new AuthResponse
             {
                 TenantId = user.TenantId,
                 Role = user.Role,
-                Token = "TEMP_TOKEN",
-                ExpiresAt = DateTime.UtcNow.AddHours(1)
+                Token = token,
+                ExpiresAt = expiresAt
             };
         }
     }
