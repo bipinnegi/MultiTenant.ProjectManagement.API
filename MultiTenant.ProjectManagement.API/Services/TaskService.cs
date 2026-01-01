@@ -67,5 +67,19 @@ namespace MultiTenant.ProjectManagement.API.Services
                     t.TenantId == tenantId)
                 .ToListAsync();
         }
+
+        public async Task<TaskItem> UpdateTaskStatusAsync(Guid projectId, Guid taskId, string status)
+        {
+            var tenantId = _tenantContext.GetTenantId();
+
+            var task = await _context.TaskItems.FirstOrDefaultAsync(t => t.Id == taskId && t.ProjectId == projectId && t.TenantId == tenantId);
+            if (task == null) 
+            {
+                throw new Exception("task not found or access denied");
+            }
+            task.Status = status;
+            await _context.SaveChangesAsync();
+            return task;
+        }
     }
 }

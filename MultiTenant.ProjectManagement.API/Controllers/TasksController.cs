@@ -5,8 +5,9 @@ using MultiTenant.ProjectManagement.API.Services;
 
 namespace MultiTenant.ProjectManagement.API.Controllers
 {
-    [Route("api/projects/{projectId}/tasks")]
     [ApiController]
+    [Route("api/projects/{projectId}/tasks")]
+    
     [Authorize]
     public class TasksController : ControllerBase
     {
@@ -17,6 +18,7 @@ namespace MultiTenant.ProjectManagement.API.Controllers
         }
 
         [HttpPost] // POST: /api/projects/{projectId}/tasks
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> CreateTask(Guid projectId, CreateTaskRequest request)
         {
             var task = await _taskService.CreateTaskAsync(projectId, request.Title);
@@ -30,10 +32,24 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             return Ok(tasks);
         }
 
+        [HttpPatch("{taskId}/status")]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> UpdateStatus(Guid projectId, Guid taskId, UpdateTaskStatusRequest request)
+        {
+            var task = await _taskService.UpdateTaskStatusAsync(projectId, taskId, request.Status);
+            return Ok(task);
+        }
+
 
     }
     public class CreateTaskRequest
     {
         public string Title { get; set; }
     }
+
+    public class UpdateTaskStatusRequest
+    {
+        public string Status { get; set; }
+    }
+
 }

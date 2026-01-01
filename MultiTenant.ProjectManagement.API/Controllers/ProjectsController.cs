@@ -17,6 +17,7 @@ namespace MultiTenant.ProjectManagement.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Owner")]
         public async Task<IActionResult> Create(CreateProjectRequest request)
         {
             var project = await _projectService.CreateAsync(
