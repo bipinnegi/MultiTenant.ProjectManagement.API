@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MultiTenant.ProjectManagement.API.DTOs.Tasks;
 using MultiTenant.ProjectManagement.API.Services;
 
 namespace MultiTenant.ProjectManagement.API.Controllers
@@ -42,14 +43,6 @@ namespace MultiTenant.ProjectManagement.API.Controllers
 
 
     }
-    public class CreateTaskRequest
-    {
-        public string Title { get; set; }
-    }
-
-    public class UpdateTaskStatusRequest
-    {
-        public string Status { get; set; }
-    }
+    
 
 }

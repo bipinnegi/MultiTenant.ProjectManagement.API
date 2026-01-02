@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MultiTenant.ProjectManagement.API.DTOs;
 using MultiTenant.ProjectManagement.API.Services;
 
 namespace MultiTenant.ProjectManagement.API.Controllers
@@ -38,9 +39,5 @@ namespace MultiTenant.ProjectManagement.API.Controllers
 
         
     }
-    public class CreateProjectRequest
-    {
-        public string Name { get; set; }
-        public string Description { get; set; }
-    }
+    
 }
