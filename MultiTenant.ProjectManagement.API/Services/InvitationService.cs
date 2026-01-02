@@ -55,7 +55,8 @@ namespace MultiTenant.ProjectManagement.API.Services
             return invitation;
         }
 
-        public async Task AcceptInvitationAsync(string token, string password)
+        public async Task AcceptInvitationAsync(string token, string fullName, string password)
+
         {
             var invitation = await _context.Invitations
                 .FirstOrDefaultAsync(i => i.Token == token);
@@ -73,6 +74,7 @@ namespace MultiTenant.ProjectManagement.API.Services
             {
                 Id = Guid.NewGuid(),
                 Email = invitation.Email,
+                FullName = fullName,
                 PasswordHash = _passwordHasher.HashPassword(password),
                 Role = invitation.Role,
                 TenantId = invitation.TenantId

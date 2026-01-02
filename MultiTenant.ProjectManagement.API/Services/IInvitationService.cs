@@ -6,6 +6,7 @@ namespace MultiTenant.ProjectManagement.API.Services
     {
         Task<Invitation> CreateInvitationAsync(string email, string role);
 
-        Task AcceptInvitationAsync(string token, string password);
+        Task AcceptInvitationAsync(string token, string fullName, string password);
+
     }
 }

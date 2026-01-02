@@ -44,9 +44,11 @@ namespace MultiTenant.ProjectManagement.API.Controllers
         public async Task<IActionResult> AcceptInvitation(AcceptInvitationRequest request)
         {
             await _invitationService.AcceptInvitationAsync(
-                request.Token,
-                request.Password
-            );
+                         request.Token,
+                        request.FullName,
+                           request.Password
+              );
+
 
             return Ok("Invitation accepted successfully");
         }
