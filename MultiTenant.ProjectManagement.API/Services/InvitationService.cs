@@ -29,7 +29,7 @@ namespace MultiTenant.ProjectManagement.API.Services
         {
             var tenantId = _tenantContext.GetTenantId();
 
-            // ❌ Prevent duplicate users in same tenant
+            // Prevent duplicate users in same tenant
             var userExists = await _context.Users
                 .AnyAsync(u => u.Email == email && u.TenantId == tenantId);
 
@@ -75,7 +75,7 @@ namespace MultiTenant.ProjectManagement.API.Services
                 Id = Guid.NewGuid(),
                 Email = invitation.Email,
                 FullName = fullName,
-                PasswordHash = _passwordHasher.HashPassword(password),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
                 Role = invitation.Role,
                 TenantId = invitation.TenantId
             };
