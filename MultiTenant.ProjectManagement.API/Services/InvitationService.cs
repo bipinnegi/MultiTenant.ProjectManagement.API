@@ -58,6 +58,7 @@ namespace MultiTenant.ProjectManagement.API.Services
         public async Task AcceptInvitationAsync(string token, string fullName, string password)
 
         {
+            token = token.Replace(" ", "+");
             var invitation = await _context.Invitations
                 .FirstOrDefaultAsync(i => i.Token == token);
 
