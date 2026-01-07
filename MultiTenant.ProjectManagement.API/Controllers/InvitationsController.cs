@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MultiTenant.ProjectManagement.API.Services;
 using MultiTenant.ProjectManagement.API.DTOs.Invitations;
+using MultiTenant.ProjectManagement.API.Models;
+using MultiTenant.ProjectManagement.API.Services;
 
 
 namespace MultiTenant.ProjectManagement.API.Controllers
@@ -50,7 +51,10 @@ namespace MultiTenant.ProjectManagement.API.Controllers
               );
 
 
-            return Ok("Invitation accepted successfully");
+            return Ok(new
+            {
+                token = request.Token
+            });
         }
     }
 
