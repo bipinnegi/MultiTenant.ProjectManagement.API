@@ -221,14 +221,6 @@ Computer Science & Engineering Student
 
 🎯 **Actively seeking ASP.NET Core / Backend Internship opportunities**
 
----
-
-## 🔗 Project Links
-
-- **GitHub Repository:** _add link here_
-- **Live API (Azure):** _add link here_
-
----
 
 ## 🧭 Future Enhancements
 
