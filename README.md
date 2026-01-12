@@ -1,4 +1,3 @@
-```md
 # 🚀 Project Management REST API  
 ### ASP.NET Core | Azure | CI/CD | Secure Backend System
 
