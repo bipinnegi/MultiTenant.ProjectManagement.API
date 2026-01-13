@@ -41,5 +41,36 @@ namespace MultiTenant.ProjectManagement.API.Services
 
             return await _context.Projects.Where(p => p.TenantId == tenantId).ToListAsync();
         }
+
+        public async Task<Project> DeleteProjectAsync(Guid projectId)
+        {
+
+            var tenantId = _tenantContext.GetTenantId();
+
+            var project = await _context.Projects
+                .FirstOrDefaultAsync(p =>
+                    p.Id == projectId &&
+                    p.TenantId == tenantId);
+
+            if (project == null)
+            {
+                throw new Exception("Project not found or access denied");
+            }
+
+            //Delete related tasks first
+            var tasks = await _context.TaskItems
+                .Where(t =>
+                    t.ProjectId == projectId &&
+                    t.TenantId == tenantId)
+                .ToListAsync();
+
+            _context.TaskItems.RemoveRange(tasks);
+
+            _context.Projects.Remove(project);
+
+            await _context.SaveChangesAsync();
+
+            return project;
+        }
     }
 }

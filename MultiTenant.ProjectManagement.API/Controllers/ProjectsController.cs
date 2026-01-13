@@ -35,9 +35,17 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             var projects = await _projectService.GetAllAsync();
             return Ok(projects);
         }
-    
 
-        
+        [HttpDelete("{projectId}")]
+        [Authorize(Roles ="Owner")]
+        public async Task<IActionResult> DeleteProject(Guid projectId)
+        {
+            var project = await _projectService.DeleteProjectAsync(projectId);
+            return Ok(project);
+        }
+
+
+
     }
     
 }

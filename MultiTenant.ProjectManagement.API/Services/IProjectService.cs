@@ -7,5 +7,7 @@ namespace MultiTenant.ProjectManagement.API.Services
         Task<Project> CreateAsync(string  name, string discription );
         Task<List<Project>> GetAllAsync();
 
+        Task<Project> DeleteProjectAsync(Guid projectId);
+
     }
 }
