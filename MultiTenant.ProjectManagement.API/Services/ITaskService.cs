@@ -8,5 +8,6 @@ namespace MultiTenant.ProjectManagement.API.Services
 
         Task<List<TaskItem>> GetTasksByProjectAsync( Guid projectId);
         Task<TaskItem> UpdateTaskStatusAsync(Guid projectId, Guid taskId, string status);
+        Task<TaskItem> DeleteTaskAsync( Guid projectId, Guid taskId );
     }
 }

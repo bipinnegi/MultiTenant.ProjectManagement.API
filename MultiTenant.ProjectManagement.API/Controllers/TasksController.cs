@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MultiTenant.ProjectManagement.API.DTOs.Tasks;
 using MultiTenant.ProjectManagement.API.Services;
@@ -41,8 +42,17 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             return Ok(task);
         }
 
+        [HttpDelete("{taskId}")]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> DeleteTask(Guid projectId, Guid taskId)
+        {
+            var deletedTask = await _taskService.DeleteTaskAsync(projectId, taskId);
+            return Ok(deletedTask);
+        }
+
+
 
     }
-    
+
 
 }
