@@ -14,5 +14,7 @@ namespace MultiTenant.ProjectManagement.API.Data
         public DbSet<Project> Projects { get; set; }
         public DbSet<TaskItem> TaskItems { get; set; }
         public DbSet<Invitation> Invitations {  get; set; }
+        public DbSet<ActivityLog> ActivityLogs { get; set; }
     }
 }
+
