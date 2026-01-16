@@ -12,9 +12,11 @@ namespace MultiTenant.ProjectManagement.API.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _projectService;
-        public ProjectsController(IProjectService projectService) 
+        private readonly IActivityLogService _activityLogService;
+        public ProjectsController(IProjectService projectService, IActivityLogService  activityLogService) 
         { 
          _projectService = projectService;
+            _activityLogService = activityLogService;
         }
 
         [HttpPost]
@@ -25,9 +27,16 @@ namespace MultiTenant.ProjectManagement.API.Controllers
                 request.Name,
                 request.Description
             );
+            await _activityLogService.LogAsync(
+                actionType: "CREATE",
+                entityType: "Project",
+                entityId: project.Id,
+                message: $"Project '{project.Name}' was created"
+            );
 
             return Ok(project);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -36,11 +45,19 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             return Ok(projects);
         }
 
+
+
         [HttpDelete("{projectId}")]
         [Authorize(Roles ="Owner")]
         public async Task<IActionResult> DeleteProject(Guid projectId)
         {
             var project = await _projectService.DeleteProjectAsync(projectId);
+            await _activityLogService.LogAsync(
+               actionType: "DELETE",
+               entityType: "Project",
+               entityId: project.Id,
+               message: $"Project '{project.Name}' was deleted"
+            );
             return Ok(project);
         }
 

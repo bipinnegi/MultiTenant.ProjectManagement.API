@@ -37,6 +37,8 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IInvitationService, InvitationService>();
 builder.Services.AddScoped<PasswordHasher>();
+builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
+
 
 
 
