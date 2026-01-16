@@ -142,6 +142,9 @@ Azure SQL Database
 
 ## 📬 API Endpoints (Sample)
 
+### Activity
+-Get `/api/activity/recent`
+
 ### Authentication
 - POST `/api/auth/register`
 - POST `/api/auth/login`
@@ -149,14 +152,13 @@ Azure SQL Database
 ### Projects
 - GET `/api/projects`
 - POST `/api/projects`
-- PUT `/api/projects/{id}`
-- DELETE `/api/projects/{id}`
+- DELETE `/api/projects/{projectId}`
 
 ### Tasks
-- GET `/api/tasks`
-- POST `/api/tasks`
-- PUT `/api/tasks/{id}`
-- DELETE `/api/tasks/{id}`
+- GET `/api/projects/projectId/tasks`
+- POST `/api/projects/projectId/tasks`
+- Patch `/api/projects/projectId/tasks/{id}`
+- DELETE `/api/projects/projectId/tasks/{id}`
 
 > 🔒 All endpoints (except login/register) are **JWT protected**.
 
@@ -207,7 +209,7 @@ This project demonstrates:
 
 ## 👨‍💻 About the Developer
 
-**Bipin**  
+**Bipin Negi**  
 Computer Science & Engineering Student  
 
 ### Skills
@@ -218,7 +220,9 @@ Computer Science & Engineering Student
 - GitHub & CI/CD
 - Postman
 - Angular / React
-
+- Bootstrap
+- TypeScript
+- JSON
 🎯 **Actively seeking ASP.NET Core / Backend Internship opportunities**
 
 
@@ -232,9 +236,3 @@ Computer Science & Engineering Student
 
 ---
 
-## ⭐ Final Note for Reviewers
-
-If you are reviewing this project as a recruiter or senior developer:
-
-> This project reflects **real backend engineering capability**, not academic-level work.
-```
