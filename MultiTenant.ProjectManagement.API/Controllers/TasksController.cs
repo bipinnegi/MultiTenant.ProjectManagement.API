@@ -14,9 +14,11 @@ namespace MultiTenant.ProjectManagement.API.Controllers
     public class TasksController : ControllerBase
     {
         private readonly ITaskService _taskService;
-        public TasksController(ITaskService taskService) 
+        private readonly IActivityLogService _activityLogService;
+        public TasksController(ITaskService taskService, IActivityLogService activityLogService) 
         { 
           _taskService = taskService;
+            _activityLogService = activityLogService;
         }
 
         [HttpPost] // POST: /api/projects/{projectId}/tasks
@@ -24,6 +26,13 @@ namespace MultiTenant.ProjectManagement.API.Controllers
         public async Task<IActionResult> CreateTask(Guid projectId, CreateTaskRequest request)
         {
             var task = await _taskService.CreateTaskAsync(projectId, request.Title);
+
+            await _activityLogService.LogAsync(actionType: "Create",
+                                               entityType: "Task",
+                                               entityId: task.Id,
+                                               message: $"Task \"{task.Title}\"Created"
+                                               );
+
             return Ok(task);
         }
 
@@ -39,6 +48,15 @@ namespace MultiTenant.ProjectManagement.API.Controllers
         public async Task<IActionResult> UpdateStatus(Guid projectId, Guid taskId, UpdateTaskStatusRequest request)
         {
             var task = await _taskService.UpdateTaskStatusAsync(projectId, taskId, request.Status);
+
+            // ACTIVITY LOG
+            await _activityLogService.LogAsync(
+                actionType: "Update",
+                entityType: "Task",
+                entityId: task.Id,
+                message: $"Task \"{task.Title}\" moved to {task.Status}"
+            );
+
             return Ok(task);
         }
 
@@ -47,6 +65,13 @@ namespace MultiTenant.ProjectManagement.API.Controllers
         public async Task<IActionResult> DeleteTask(Guid projectId, Guid taskId)
         {
             var deletedTask = await _taskService.DeleteTaskAsync(projectId, taskId);
+
+            await _activityLogService.LogAsync(
+                                               actionType: "Delete",
+                                               entityType: "Task",
+                                               entityId: deletedTask.Id,
+                                               message: $"Task \"{deletedTask.Title}\" deleted"
+                                              );
             return Ok(deletedTask);
         }
 
