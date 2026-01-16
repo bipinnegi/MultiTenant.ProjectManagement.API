@@ -143,7 +143,7 @@ Azure SQL Database
 ## 📬 API Endpoints (Sample)
 
 ### Activity
--Get `/api/activity/recent`
+- Get `/api/activity/recent`
 
 ### Authentication
 - POST `/api/auth/register`
@@ -223,7 +223,7 @@ Computer Science & Engineering Student
 - Bootstrap
 - TypeScript
 - JSON
-🎯 **Actively seeking ASP.NET Core / Backend Internship opportunities**
+- 🎯 **Actively seeking ASP.NET Core / Backend Internship opportunities**
 
 
 ## 🧭 Future Enhancements
