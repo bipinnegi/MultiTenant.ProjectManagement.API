@@ -38,8 +38,7 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IInvitationService, InvitationService>();
 builder.Services.AddScoped<PasswordHasher>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
-
-
+builder.Services.AddScoped<ITenantService, TenantService>();
 
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>() ?? throw new Exception("JWT settings are not configured properly");
