@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MultiTenant.ProjectManagement.API.DTOs.Tenants;
 using MultiTenant.ProjectManagement.API.Services;
@@ -13,6 +12,14 @@ namespace MultiTenant.ProjectManagement.API.Controllers
     {
         private readonly ITenantService _tenantService;
 
+        
+        private static readonly HashSet<string> AllowedRoles =
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                "Owner",
+                "Member"
+            };
+
         public TenantsController(ITenantService tenantService)
         {
             _tenantService = tenantService;
@@ -25,13 +32,42 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             return Ok(members);
         }
 
-
         [HttpPatch("members/{userId}/role")]
-        public async Task<IActionResult> ChangeMemberRole(Guid userId, [FromBody] UpdateMemberRoleRequest request)
+        public async Task<IActionResult> ChangeMemberRole(
+            Guid userId,
+            [FromBody] UpdateMemberRoleRequest request)
         {
-            await _tenantService.ChangeMemberRoleAsync(userId, request.Role);
-            return NoContent();
-        }
+            //  Validate request body
+            if (request == null || string.IsNullOrWhiteSpace(request.Role))
+            {
+                return BadRequest("Role is required.");
+            }
 
+            var newRole = request.Role.Trim();
+
+            //Validate allowed roles
+            if (!AllowedRoles.Contains(newRole))
+            {
+                return BadRequest("Invalid role. Allowed roles: Owner, Member.");
+            }
+
+            try
+            {
+                await _tenantService.ChangeMemberRoleAsync(userId, newRole);
+                return NoContent(); // 204
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message); // 403
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message); // 409
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message); // 404
+            }
+        }
     }
 }
