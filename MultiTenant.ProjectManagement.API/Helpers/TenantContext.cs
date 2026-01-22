@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using MultiTenant.ProjectManagement.API.Models;
+using System.Security.Claims;
 
 namespace MultiTenant.ProjectManagement.API.Helpers
 {
@@ -9,6 +10,10 @@ namespace MultiTenant.ProjectManagement.API.Helpers
         {
             _httpContextAccessor = httpContextAccessor;
         }
+
+        private ClaimsPrincipal User =>
+            _httpContextAccessor.HttpContext?.User
+            ?? throw new Exception("HttpContext not available");
 
         public Guid GetTenantId()
         {
@@ -28,6 +33,27 @@ namespace MultiTenant.ProjectManagement.API.Helpers
             }
 
             return Guid.Parse(tenantIdValue);
+        }
+
+        public Guid GetUserId()
+        {
+            var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                              ?? User.FindFirstValue("sub");
+
+            if (string.IsNullOrEmpty(userIdValue))
+                throw new Exception("UserId not found in token");
+
+            return Guid.Parse(userIdValue);
+        }
+
+        public string GetUserRole()
+        {
+            var role = User.FindFirstValue(ClaimTypes.Role);
+
+            if (string.IsNullOrEmpty(role))
+                throw new Exception("Role not found in token");
+
+            return role;
         }
     }
 }

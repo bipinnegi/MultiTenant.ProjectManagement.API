@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MultiTenant.ProjectManagement.API.DTOs.Tenants;
 using MultiTenant.ProjectManagement.API.Services;
 
 namespace MultiTenant.ProjectManagement.API.Controllers
@@ -23,5 +24,14 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             var members = await _tenantService.GetTenantMembersAsync();
             return Ok(members);
         }
+
+
+        [HttpPatch("members/{userId}/role")]
+        public async Task<IActionResult> ChangeMemberRole(Guid userId, [FromBody] UpdateMemberRoleRequest request)
+        {
+            await _tenantService.ChangeMemberRoleAsync(userId, request.Role);
+            return NoContent();
+        }
+
     }
 }
