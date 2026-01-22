@@ -37,29 +37,37 @@ namespace MultiTenant.ProjectManagement.API.Services
                 .ToListAsync();
         }
 
-      
+
         // Change member role (Owner only)
         public async Task ChangeMemberRoleAsync(Guid userId, string newRole)
         {
             var tenantId = _tenantContext.GetTenantId();
-            var currentUserId = _tenantContext.GetUserId();
-            var currentUserRole = _tenantContext.GetUserRole();
+            var currentUserEmail = _tenantContext.GetUserEmail();
 
-            // Only Owner can change roles
-            if (currentUserRole != "Owner")
+            // 1️⃣ Validate role input
+            var allowedRoles = new[] { "Owner", "Member" };
+            if (!allowedRoles.Contains(newRole))
+                throw new ArgumentException("Invalid role.");
+
+            // 2️⃣ Get current user
+            var currentUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == currentUserEmail && u.TenantId == tenantId);
+
+            if (currentUser == null || currentUser.Role != "Owner")
                 throw new UnauthorizedAccessException("Only owners can change roles.");
 
-            // Cannot change own role
-            if (currentUserId == userId)
+            // 3️⃣ Prevent changing own role
+            if (currentUser.Id == userId)
                 throw new InvalidOperationException("You cannot change your own role.");
 
+            // 4️⃣ Get target user
             var targetUser = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId && u.TenantId == tenantId);
 
             if (targetUser == null)
                 throw new Exception("User not found in this tenant.");
 
-            // Prevent removing last owner
+            // 5️⃣ Prevent removing last owner
             if (targetUser.Role == "Owner" && newRole == "Member")
             {
                 var ownerCount = await _context.Users
@@ -69,10 +77,10 @@ namespace MultiTenant.ProjectManagement.API.Services
                     throw new InvalidOperationException("At least one owner is required.");
             }
 
-            // Update role
+            // 6️⃣ Apply role change
             targetUser.Role = newRole;
 
-            // Activity log
+            // 7️⃣ Log activity
             _context.ActivityLogs.Add(new ActivityLog
             {
                 TenantId = tenantId,
@@ -82,5 +90,6 @@ namespace MultiTenant.ProjectManagement.API.Services
 
             await _context.SaveChangesAsync();
         }
+
     }
 }

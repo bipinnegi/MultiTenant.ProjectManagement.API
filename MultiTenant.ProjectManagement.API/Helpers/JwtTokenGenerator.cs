@@ -20,6 +20,7 @@ namespace MultiTenant.ProjectManagement.API.Helpers
             var claims = new[]
             {
              new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+             new Claim(ClaimTypes.Email, user.Email),
              new Claim("tenantId", user.TenantId.ToString()),
              new Claim(ClaimTypes.Role, user.Role)
             };

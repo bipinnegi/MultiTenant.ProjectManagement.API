@@ -15,6 +15,16 @@ namespace MultiTenant.ProjectManagement.API.Helpers
             _httpContextAccessor.HttpContext?.User
             ?? throw new Exception("HttpContext not available");
 
+        private ClaimsPrincipal GetUser()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user == null || !user.Identity!.IsAuthenticated)
+                throw new Exception("User is not authenticated");
+
+            return user;
+        }
+
         public Guid GetTenantId()
         {
             var user = _httpContextAccessor.HttpContext?.User;
@@ -54,6 +64,16 @@ namespace MultiTenant.ProjectManagement.API.Helpers
                 throw new Exception("Role not found in token");
 
             return role;
+        }
+
+        public string GetUserEmail()
+        {
+            var email = GetUser().FindFirstValue(ClaimTypes.Email);
+
+            if (string.IsNullOrEmpty(email))
+                throw new Exception("Email not found in token");
+
+            return email;
         }
     }
 }
