@@ -6,5 +6,7 @@ namespace MultiTenant.ProjectManagement.API.Services
     {
         Task<List<TenantMemberResponse>> GetTenantMembersAsync();
          Task ChangeMemberRoleAsync(Guid userId, string newRole);
+
+        Task RemoveMemberAsync(Guid userId);
     }
 }

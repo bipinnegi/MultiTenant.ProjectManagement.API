@@ -12,7 +12,7 @@ namespace MultiTenant.ProjectManagement.API.Controllers
     {
         private readonly ITenantService _tenantService;
 
-        
+        // centralised allowed roles validation
         private static readonly HashSet<string> AllowedRoles =
             new(StringComparer.OrdinalIgnoreCase)
             {
@@ -25,30 +25,38 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             _tenantService = tenantService;
         }
 
+      
+        // GET: List all members of current tenant
+       
         [HttpGet("members")]
         public async Task<IActionResult> GetMembers()
         {
             var members = await _tenantService.GetTenantMembersAsync();
-            return Ok(members);
+            return Ok(members); // 200
         }
 
+      
+        // PATCH: Change member role (Owner only)
+      
         [HttpPatch("members/{userId}/role")]
         public async Task<IActionResult> ChangeMemberRole(
             Guid userId,
             [FromBody] UpdateMemberRoleRequest request)
         {
-            //  Validate request body
+            // validate request body
             if (request == null || string.IsNullOrWhiteSpace(request.Role))
             {
-                return BadRequest("Role is required.");
+                return BadRequest("Role is required."); // 400
             }
 
             var newRole = request.Role.Trim();
 
-            //Validate allowed roles
+            // validate allowed roles
             if (!AllowedRoles.Contains(newRole))
             {
-                return BadRequest("Invalid role. Allowed roles: Owner, Member.");
+                return BadRequest(
+                    "Invalid role. Allowed roles: Owner, Member."
+                ); // 400
             }
 
             try
@@ -67,6 +75,30 @@ namespace MultiTenant.ProjectManagement.API.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message); // 404
+            }
+        }
+
+
+        // DELETE: Remove member from tenant (Owner only)
+        [HttpDelete("members/{userId}")]
+        public async Task<IActionResult> RemoveMember(Guid userId)
+        {
+            try
+            {
+                await _tenantService.RemoveMemberAsync(userId);
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
             }
         }
     }
